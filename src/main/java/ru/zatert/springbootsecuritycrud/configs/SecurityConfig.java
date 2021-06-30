@@ -26,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/").permitAll()
             .antMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/auth").hasRole("ADMIN")
                 //разбивка по ролям для реста
 //            .antMatchers(HttpMethod.GET, "/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
 //            .antMatchers(HttpMethod.POST, "/**").hasRole(Role.ADMIN.name())
@@ -35,9 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
+                //.loginPage("/login").permitAll()
                // .defaultSuccessUrl("/auth/hello");
-                .loginProcessingUrl("/login")
+                //.loginProcessingUrl("/login")
                 .successHandler(new LoginSuccessHandler())
                 .usernameParameter("username")
                 .passwordParameter("password") // везде 100
@@ -46,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logout().logoutSuccessUrl("/");
                 //.loginProcessingUrl("/login")
             //.permitAll();
-                // будем пускать только аунтофицированных пользоватлей
+                // будем пускать только аунтифицированных пользоватлей
 //            .antMatchers("/auth/**").authenticated()
 //                // админка
 //            .antMatchers("/admin/**").hasRole("ADMIN")

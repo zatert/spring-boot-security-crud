@@ -26,7 +26,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         Set set = (Set) userDetails.getAuthorities();
         String str = set.toString();
         if(str.equals("[ROLE_ADMIN]" )) {
-            response.sendRedirect("/admin");
+            response.sendRedirect("/users");
         }
         else if(str.equals("[ROLE_USER]" )) {
             response.sendRedirect("/user");
