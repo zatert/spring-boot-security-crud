@@ -75,10 +75,10 @@
                 userObj,
                 contentType: 'application/json; charset=utf-8',
                 success: function(){
-                    alert("Это начало"+userObj);
+                    // alert("Это начало"+userObj);
                     //alert('Saved successfully');
-                    alert("Это начало"+user);
-                    editUser(user);
+                    // alert("Это начало"+user);
+                    // editUser(user);
                     getAllUsers();
                     reset();
                 },
@@ -90,54 +90,54 @@
         })
     })
 
-    function editUser(user){
-        var userObj = JSON.stringify(user);
-        $.ajax({
-            url: '/edit',
-            method: 'PUT',
-            dataType: 'json',
-            data: userObj,
-            success: function (data){
-                alert(data.email+"Это эдитЮзер");
-
-            },
-            error: function(error){
-                alert("error editUser Это эдитЮзер");
-                alert(userObj);
-            }
-        })
-    }
+    // function editUser(user){
+    //     var userObj = JSON.stringify(user);
+    //     $.ajax({
+    //         url: '/edit',
+    //         method: 'PUT',
+    //         dataType: 'json',
+    //         data: userObj,
+    //         success: function (data){
+    //             alert(data.email+"Это эдитЮзер");
+    //
+    //         },
+    //         error: function(error){
+    //             alert("error editUser Это эдитЮзер");
+    //             alert(userObj);
+    //         }
+    //     })
+    // }
 
     // success: function(data){
     //     $('#txtUsername').val(data.username);
 
 
 
-
-    //  function send_user(){
-    // // $('#my_form_send').click(function(){
-    //     $.ajax({
-    //         url: '/add_user',
-    //         // userId = userId.val();
-    //         //url = contextPath + "users/delete/" + userId;
-    //         dataType: 'json',
-    //         type: 'POST',
-    //         cache: false,
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({
-    //             id: $("#user_id").val(),
-    //             username: $("#user_username").val(),
-    //             password: $("#user_password").val(),
-    //             email: $("#user_email").val()
-    //         }),
-    //         success: function (){   //html
-    //             // $("#test_user").html(html);
-    //             showUsers();
-    //
-    //         }
-    //     });
-    //     // return false;
-    // }
+//здесь коометс
+//      function send_user(){
+//     // $('#my_form_send').click(function(){
+//         $.ajax({
+//             url: '/add_user',
+//             // userId = userId.val();
+//             //url = contextPath + "users/delete/" + userId;
+//             dataType: 'json',
+//             type: 'POST',
+//             cache: false,
+//             contentType: 'application/json',
+//             data: JSON.stringify({
+//                 id: $("#user_id").val(),
+//                 username: $("#user_username").val(),
+//                 password: $("#user_password").val(),
+//                 email: $("#user_email").val()
+//             }),
+//             success: function (){   //html
+//                 // $("#test_user").html(html);
+//                 showUsers();
+//
+//             }
+//         });
+//         // return false;
+//     }
 // const buttonDelete = $("#delete");
 //      buttonDelete.click(
 //     function (){
@@ -157,7 +157,7 @@
 //          });
 //     }
 //     )
-
+//клоуз комментс
     function deleteUser(id){
          $.ajax({
              url: '/delete/' + id,
@@ -247,8 +247,8 @@ function reset(){
 <div>
     <table>
         <tr>
-            <td>ID</td>
-            <td><input type="text" id="txtId"></td>
+            <td></td>
+            <td><input type="hidden" id="txtId"></td>
         </tr>
         <tr>
             <td>Username</td>

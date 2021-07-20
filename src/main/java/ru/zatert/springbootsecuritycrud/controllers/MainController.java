@@ -23,8 +23,6 @@ import java.util.stream.Stream;
 @RestController
 //@RequestMapping("/auth")
 public class MainController {
-    @Autowired
-    private UserService userService;
 
 //    @GetMapping("/login")
 //    public String getLoginPage() {
@@ -44,67 +42,98 @@ public class MainController {
 //        userService.save(user);
 //    }
 
-/*---------========================== GET ONE =========================------------------*/
-    @RequestMapping(value="/get_one/{id}", method = RequestMethod.PUT)//
+    @Autowired
+    private UserService userServ;
+    /*---------========================== GET ONE =========================------------------*/
+    @PutMapping(value="/get_one/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        if(id == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        User user = userService.findById(id);  //  добавим this
-        if(user == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    /*---------========================== ADD =========================------------------*/
-    @RequestMapping(value = "/add_user", method = RequestMethod.POST)
-    public ResponseEntity<User> saveUser(@RequestBody User user){
-        if(user == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        this.userService.save(user);
-        return new  ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-    /*---------========================== EDIT =========================------------------*/
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT) //{id}
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user){
-        User currentUser = userService.findById(id);
-        System.out.println(user);
-       //System.out.println(username);
-        if(user == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        currentUser.setId(id);
-        currentUser.setUsername(user.getUsername());
-        currentUser.setPassword(user.getPassword());
-        currentUser.setEmail(user.getEmail());
-        this.userService.save(currentUser);
-        //System.out.println(user + "   " + currentUser);
-        return new  ResponseEntity<>(currentUser, HttpStatus.OK);
-    }
-
-
-    /*---------========================== DELETE =========================------------------*/
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id){
-        User user = this.userService.findById(id);
-        if(user == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.deleteById(id);
-        return new  ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return userServ.getUser(id);
     }
     /*---------========================== GET ALL =========================------------------*/
-    @RequestMapping(value = "/all_users", method = RequestMethod.GET)
+    @GetMapping(value = "/all_users")
     public ResponseEntity<List<User>> getAll(){
-//        List<User> list = this.userService.findAll();
-        List<User> list = new ArrayList<>();
-        userService.findAll().forEach(list::add);
-        if(list.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return userServ.getAll();
     }
+    /*---------========================== ADD =========================------------------*/
+    @PostMapping(value = "/add_user")
+    public ResponseEntity<User> saveUser(@RequestBody User user){
+       return userServ.saveUser(user);
+    }
+    /*---------========================== EDIT =========================------------------*/
+    @PutMapping (value = "/edit/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user){
+        return userServ.updateUser(id, user);
+    }
+
+    /*---------========================== DELETE =========================------------------*/
+    @DeleteMapping(value = "delete/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id) {
+        return userServ.deleteUser(id);
+    }
+
+
+
+/*---------========================== GET ONE =========================------------------*/
+//    @PutMapping(value="/get_one/{id}")//, method = RequestMethod.PUT)//
+//    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+//        if(id == null){
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        User user = userService.findById(id);  //  добавим this
+//        if(user == null){
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
+//
+//    /*---------========================== ADD =========================------------------*/
+//    @RequestMapping(value = "/add_user", method = RequestMethod.POST)
+//    public ResponseEntity<User> saveUser(@RequestBody User user){
+//        if(user == null){
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        this.userService.save(user);
+//        return new  ResponseEntity<>(user, HttpStatus.CREATED);
+//    }
+//
+//    /*---------========================== EDIT =========================------------------*/
+//    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT) //{id}
+//    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user){
+//        User currentUser = userService.findById(id);
+//        System.out.println(user);
+//       //System.out.println(username);
+//        if(user == null){
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        currentUser.setId(id);
+//        currentUser.setUsername(user.getUsername());
+//        currentUser.setPassword(user.getPassword());
+//        currentUser.setEmail(user.getEmail());
+//        this.userService.save(currentUser);
+//        //System.out.println(user + "   " + currentUser);
+//        return new  ResponseEntity<>(currentUser, HttpStatus.OK);
+//    }
+//
+//
+//    /*---------========================== DELETE =========================------------------*/
+//    @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
+//    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id){
+//        User user = this.userService.findById(id);
+//        if(user == null){
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        userService.deleteById(id);
+//        return new  ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
+//    /*---------========================== GET ALL =========================------------------*/
+//    @RequestMapping(value = "/all_users", method = RequestMethod.GET)
+//    public ResponseEntity<List<User>> getAll(){
+////        List<User> list = this.userService.findAll();
+//        List<User> list = new ArrayList<>();
+//        userService.findAll().forEach(list::add);
+//        if(list.isEmpty()){
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
 }
