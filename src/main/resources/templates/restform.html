@@ -16,54 +16,30 @@
     table th, table td {padding: 5px;}
 </style>
 <script type="text/javascript">
-    function showUsers(){
-        $.get('/all_users', function(data){
-            let table = "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th><th>Email</th></tr>";
-            for(let i = 0; i < data.length; i++) {
-                table = table + "<tr>"+"<td>" + data[i].id + "</td><td>" + data[i].username + "</td><td>" + data[i].password + "</td><td>" +
-                    data[i].email + "</td>"+"</td>" +"</tr>";
-            }
-            table = table + "</table>";
-            $("#test_user").html(table);
-        })
-    }
-
-    //+"<td>" +"<button onclick = "deleteUser("+"data[i].id+")">Delete</button></td>
-
-    // functtion getAllUsers(){
-    //     $.ajax({
-    //         url:"http://localhost:8080/users",
-    //         method: "GET",
-    //         dataType: "json",
-    //         success: function(data){
-    //
-    //         }
-    //     })
-    // }
-
-
 
     $(document).ready(function(){
-        // showUsers();
-        //  setInterval('showUsers()', 100);
-        // setTimeout(showUsers(), 0);
-
-        var user = {};
-        var dynamicURL = "";
-        var methodName = "";
-
+        let user = {};
+        let dynamicURL = "";
+        let methodName = "";
+//---------------============= UPDATE/ADD NEW USER =============---------------
         getAllUsers();
         $('#btnAddUser').click(function(){
            user.username =  $('#txtUsername').val();
-           user.password = $('#txtPassword').val();
+            user.password = $('#txtPassword').val();
             user.email = $('#txtEmail').val();
-            var userId = $('#txtId').val();
+            // let role = $('#txtRole').val();
+            // user.roles = {
+            //     name:role
+            // };
+            user.lastname = $('#txtRole').val();
+            let userId = $('#txtId').val();
             if(userId){
                 // update it
                 dynamicURL = '/edit/'+ userId;
                 methodName = "PUT";
             } else {
                 //save it
+                alert("save user");
                 dynamicURL = '/add_user/';
                 methodName = "POST";
             }
@@ -75,89 +51,18 @@
                 userObj,
                 contentType: 'application/json; charset=utf-8',
                 success: function(){
-                    // alert("Это начало"+userObj);
-                    //alert('Saved successfully');
-                    // alert("Это начало"+user);
-                    // editUser(user);
                     getAllUsers();
                     reset();
                 },
                 error: function (error){
                     alert("error send user Это начало");
+                    alert(JSON.stringify(user));
                 }
 
             })
         })
     })
-
-    // function editUser(user){
-    //     var userObj = JSON.stringify(user);
-    //     $.ajax({
-    //         url: '/edit',
-    //         method: 'PUT',
-    //         dataType: 'json',
-    //         data: userObj,
-    //         success: function (data){
-    //             alert(data.email+"Это эдитЮзер");
-    //
-    //         },
-    //         error: function(error){
-    //             alert("error editUser Это эдитЮзер");
-    //             alert(userObj);
-    //         }
-    //     })
-    // }
-
-    // success: function(data){
-    //     $('#txtUsername').val(data.username);
-
-
-
-//здесь коометс
-//      function send_user(){
-//     // $('#my_form_send').click(function(){
-//         $.ajax({
-//             url: '/add_user',
-//             // userId = userId.val();
-//             //url = contextPath + "users/delete/" + userId;
-//             dataType: 'json',
-//             type: 'POST',
-//             cache: false,
-//             contentType: 'application/json',
-//             data: JSON.stringify({
-//                 id: $("#user_id").val(),
-//                 username: $("#user_username").val(),
-//                 password: $("#user_password").val(),
-//                 email: $("#user_email").val()
-//             }),
-//             success: function (){   //html
-//                 // $("#test_user").html(html);
-//                 showUsers();
-//
-//             }
-//         });
-//         // return false;
-//     }
-// const buttonDelete = $("#delete");
-//      buttonDelete.click(
-//     function (){
-//          $.ajax("/rest", {
-//             method: "DELETE",
-//             // url:'delete_user',
-//             // dataType: 'json',
-//             // type: 'DELETE',
-//             // cache: false,
-//              data: {id: $(this).attr("value")}, //в rest-контроллер будет передан id=1 (см. value из тэга button выше)
-//              dataType: "text",
-//              success: function (msg) {
-//                  $("#test_user")
-//                      .find("#" + msg) //ищем div с id=1
-//                      .remove();
-//              }
-//          });
-//     }
-//     )
-//клоуз комментс
+    //---------------============= DELETE USER =============---------------
     function deleteUser(id){
          $.ajax({
              url: '/delete/' + id,
@@ -173,7 +78,7 @@
              }
          })
     }
-
+    //---------------============= UPDATE USER =============---------------
     function updateUser(id){
         //var userObj = JSON.stringify(user);
     $.ajax({
@@ -183,10 +88,16 @@
      //   data: userObj,
         //data: {},
         contentType: 'application/json; charset=utf-8',
-        success: function(data){
+        success:
+            function(data){
+            let role;
+            if(data.roles[0].name=="ROLE_USER")
+                role="1";
+            else role="2";
             $('#txtUsername').val(data.username);
-            $('#txtPassword').val(data.password);
+            $('#txtRole').val(role);
             $('#txtEmail').val(data.email);
+            $('#txtPassword').val(data.password);
             $('#txtId').val(data.id);
             getAllUsers();
         },
@@ -196,18 +107,19 @@
 
     })
     }
-
+    //---------------============= GET ALL USERS =============---------------
 function getAllUsers(){
         $.ajax({
             url: 'all_users',
             method: "GET",
             dataType: 'json',
             success: function (data){
+                // alert(JSON.stringify(data));
                 var tableBody = $('#tblUser tbody');
                 tableBody.empty();
                 $(data).each(function(index, element){
-                    tableBody.append('<tr><td>'+element.username+'</td><td>'+element.password+'</td><td>'+element.email+'</td><td><button onclick="updateUser('+element.id+')">Edit</button> | <button onclick="deleteUser('+element.id+')">Delete</button></td></tr>');
-                })
+                    tableBody.append('<tr><td>'+element.username+'</td><td>'+element.roles[0].name+'</td><td>'+element.email+'</td><td><button onclick="updateUser('+element.id+')">Edit</button> | <button onclick="deleteUser('+element.id+')">Delete</button></td></tr>');
+                })// изменил здесь пароль на роль
             },
             error: function(error){
                 alert(error);
@@ -219,6 +131,7 @@ function getAllUsers(){
 
 function reset(){
         $('#txtUsername').val('');
+        $('#txtRole').val('');
         $('#txtPassword').val('');
         $('#txtEmail').val('');
         $('#txtId').val('');
@@ -226,24 +139,10 @@ function reset(){
 
 
 
-
-
-
-
 </script>
 <body>
     <div id="test_user"> </div>
-<!--    <button type="button" id="delete" name="id" value="43">delete</button>-->
-<!--    <form id="my_form">-->
-<!--        <input type="hidden" id="user_id" placeholder="id">-->
-<!--        <input type="text" id="user_username" placeholder="username">-->
-<!--        <input type="text" id="user_password" placeholder="password">-->
-<!--        <input type="text" id="user_email" placeholder="email"></br>-->
-<!--        <input type="button" onclick="send_user()" value="Save">-->
-
-<!--&lt;!&ndash;        &ndash;&gt;-->
-<!--    </form>-->
-
+<!----------------================ Таблица добавления изменения юзера ================------------------------>
 <div>
     <table>
         <tr>
@@ -255,13 +154,30 @@ function reset(){
             <td><input type="text" id="txtUsername"></td>
         </tr>
         <tr>
-            <td>Password</td>
-            <td><input type="text" id="txtPassword"></td>
+<!----------------================ Роль ================------------------------>
+            <td>Role</td>
+            <td>
+<!--            <td><input type="text" id="txtRole"></td>-->
+<!--                <form action=""></form>-->
+                <select id = "txtRole">
+<!--                    <option disabled>Role</option>-->
+                    <option selected value="1">User</option>
+                    <option value="2">Admin</option>
+                </select>
+<!--                <input type="text" id="txtRole">-->
+
+            </td>
         </tr>
         <tr>
             <td>Email</td>
             <td><input type="text" id="txtEmail"></td>
         </tr>
+<!----------------================ Пассворд ===============------------------------>
+        <tr>
+            <td>Password</td>
+            <td><input type="text" id="txtPassword"></td>
+        </tr>
+
         <tr colspan="2">
             <td><input type="button" value="Ok" id="btnAddUser"></td>
         </tr>
@@ -270,7 +186,7 @@ function reset(){
         <thead>
             <tr>
                 <th>Username</th>
-                <th>Password</th>
+                <th>Role</th>
                 <th>Email</th>
                 <th>Actions</th>
             </tr>

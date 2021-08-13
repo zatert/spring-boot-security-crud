@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"/>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+    <title>Rest form</title>
+    <!--    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="shortcut icon" href="#">
+</head>
+<style>
+    table th, table td {padding: 5px;}
+</style>
+<script type="text/javascript">
+    function showUsers(){
+        $.get('/all_users', function(data){
+            let table = "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th><th>Email</th></tr>";
+            for(let i = 0; i < data.length; i++) {
+                table = table + "<tr>"+"<td>" + data[i].id + "</td><td>" + data[i].username + "</td><td>" + data[i].password + "</td><td>" +
+                    data[i].email + "</td>"+"</td>" +"</tr>";
+            }
+            table = table + "</table>";
+            $("#test_user").html(table);
+        })
+    }
+
+    //+"<td>" +"<button onclick = "deleteUser("+"data[i].id+")">Delete</button></td>
+
+    // functtion getAllUsers(){
+    //     $.ajax({
+    //         url:"http://localhost:8080/users",
+    //         method: "GET",
+    //         dataType: "json",
+    //         success: function(data){
+    //
+    //         }
+    //     })
+    // }
+
+
+
+    $(document).ready(function(){
+        // showUsers();
+        //  setInterval('showUsers()', 100);
+        // setTimeout(showUsers(), 0);
+
+        var user = {};
+        var dynamicURL = "";
+        var methodName = "";
+
+        getAllUsers();
+        $('#btnAddUser').click(function(){
+            user.username =  $('#txtUsername').val();
+            user.password = $('#txtPassword').val();
+            user.email = $('#txtEmail').val();
+            var userId = $('#txtId').val();
+            if(userId){
+                // update it
+                dynamicURL = '/edit/'+ userId;
+                methodName = "PUT";
+            } else {
+                //save it
+                dynamicURL = '/add_user/';
+                methodName = "POST";
+            }
+            var userObj = JSON.stringify(user);
+            $.ajax({
+                url:dynamicURL,
+                method: methodName,
+                data://{ username:username },
+                userObj,
+                contentType: 'application/json; charset=utf-8',
+                success: function(){
+                    // alert("Это начало"+userObj);
+                    //alert('Saved successfully');
+                    // alert("Это начало"+user);
+                    // editUser(user);
+                    getAllUsers();
+                    reset();
+                },
+                error: function (error){
+                    alert("error send user Это начало");
+                }
+
+            })
+        })
+    })
+
+    // function editUser(user){
+    //     var userObj = JSON.stringify(user);
+    //     $.ajax({
+    //         url: '/edit',
+    //         method: 'PUT',
+    //         dataType: 'json',
+    //         data: userObj,
+    //         success: function (data){
+    //             alert(data.email+"Это эдитЮзер");
+    //
+    //         },
+    //         error: function(error){
+    //             alert("error editUser Это эдитЮзер");
+    //             alert(userObj);
+    //         }
+    //     })
+    // }
+
+    // success: function(data){
+    //     $('#txtUsername').val(data.username);
+
+
+
+    //здесь коометс
+    //      function send_user(){
+    //     // $('#my_form_send').click(function(){
+    //         $.ajax({
+    //             url: '/add_user',
+    //             // userId = userId.val();
+    //             //url = contextPath + "users/delete/" + userId;
+    //             dataType: 'json',
+    //             type: 'POST',
+    //             cache: false,
+    //             contentType: 'application/json',
+    //             data: JSON.stringify({
+    //                 id: $("#user_id").val(),
+    //                 username: $("#user_username").val(),
+    //                 password: $("#user_password").val(),
+    //                 email: $("#user_email").val()
+    //             }),
+    //             success: function (){   //html
+    //                 // $("#test_user").html(html);
+    //                 showUsers();
+    //
+    //             }
+    //         });
+    //         // return false;
+    //     }
+    // const buttonDelete = $("#delete");
+    //      buttonDelete.click(
+    //     function (){
+    //          $.ajax("/rest", {
+    //             method: "DELETE",
+    //             // url:'delete_user',
+    //             // dataType: 'json',
+    //             // type: 'DELETE',
+    //             // cache: false,
+    //              data: {id: $(this).attr("value")}, //в rest-контроллер будет передан id=1 (см. value из тэга button выше)
+    //              dataType: "text",
+    //              success: function (msg) {
+    //                  $("#test_user")
+    //                      .find("#" + msg) //ищем div с id=1
+    //                      .remove();
+    //              }
+    //          });
+    //     }
+    //     )
+    //клоуз комментс
+    function deleteUser(id){
+        $.ajax({
+            url: '/delete/' + id,
+            method: 'DELETE',
+            success: function (){
+                alert('record has been deleted');
+
+                getAllUsers();
+
+            },
+            error: function(error){
+                alert(error);
+            }
+        })
+    }
+
+    function updateUser(id){
+        //var userObj = JSON.stringify(user);
+        $.ajax({
+            url:'/get_one/'+id,
+            method: 'PUT',  //GET
+            dataType:'json',
+            //   data: userObj,
+            //data: {},
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+                $('#txtUsername').val(data.username);
+                $('#txtPassword').val(data.password);
+                $('#txtEmail').val(data.email);
+                $('#txtId').val(data.id);
+                getAllUsers();
+            },
+            error: function(error){
+                alert("error updateUser");
+            }
+
+        })
+    }
+
+    function getAllUsers(){
+        $.ajax({
+            url: 'all_users',
+            method: "GET",
+            dataType: 'json',
+            success: function (data){
+                var tableBody = $('#tblUser tbody');
+                tableBody.empty();
+                $(data).each(function(index, element){
+                    tableBody.append('<tr><td>'+element.username+'</td><td>'+element.password+'</td><td>'+element.email+'</td><td><button onclick="updateUser('+element.id+')">Edit</button> | <button onclick="deleteUser('+element.id+')">Delete</button></td></tr>');
+                })
+            },
+            error: function(error){
+                alert(error);
+            }
+
+        })
+    }
+
+
+    function reset(){
+        $('#txtUsername').val('');
+        $('#txtPassword').val('');
+        $('#txtEmail').val('');
+        $('#txtId').val('');
+    }
+
+
+
+
+
+
+
+</script>
+<body>
+<div id="test_user"> </div>
+<!--    <button type="button" id="delete" name="id" value="43">delete</button>-->
+<!--    <form id="my_form">-->
+<!--        <input type="hidden" id="user_id" placeholder="id">-->
+<!--        <input type="text" id="user_username" placeholder="username">-->
+<!--        <input type="text" id="user_password" placeholder="password">-->
+<!--        <input type="text" id="user_email" placeholder="email"></br>-->
+<!--        <input type="button" onclick="send_user()" value="Save">-->
+
+<!--&lt;!&ndash;        &ndash;&gt;-->
+<!--    </form>-->
+
+<div>
+    <table>
+        <tr>
+            <td></td>
+            <td><input type="hidden" id="txtId"></td>
+        </tr>
+        <tr>
+            <td>Username</td>
+            <td><input type="text" id="txtUsername"></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><input type="text" id="txtPassword"></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input type="text" id="txtEmail"></td>
+        </tr>
+        <tr colspan="2">
+            <td><input type="button" value="Ok" id="btnAddUser"></td>
+        </tr>
+    </table>
+    <table border="1" id="tblUser">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+</body>
+</html>

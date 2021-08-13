@@ -1,6 +1,8 @@
 package ru.zatert.springbootsecuritycrud.entities;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.zatert.springbootsecuritycrud.repositories.RoleRepo;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -15,6 +17,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String lastname; // это айди роли на самом деле
 
     public User(){}
 
@@ -30,6 +33,14 @@ public class User {
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public User(Long id, String username, String password, String email, String roleId) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.lastname = roleId;
     }
 
     @ManyToMany

@@ -52,12 +52,13 @@ public class MainController {
     /*---------========================== GET ALL =========================------------------*/
     @GetMapping(value = "/all_users")
     public ResponseEntity<List<User>> getAll(){
+        ResponseEntity<List<User>> responseEntity = userServ.getAll();
         return userServ.getAll();
     }
     /*---------========================== ADD =========================------------------*/
     @PostMapping(value = "/add_user")
     public ResponseEntity<User> saveUser(@RequestBody User user){
-       return userServ.saveUser(user);
+        return userServ.saveUser(user);
     }
     /*---------========================== EDIT =========================------------------*/
     @PutMapping (value = "/edit/{id}")

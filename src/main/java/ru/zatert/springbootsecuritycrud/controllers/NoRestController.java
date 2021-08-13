@@ -1,15 +1,7 @@
 package ru.zatert.springbootsecuritycrud.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.zatert.springbootsecuritycrud.entities.User;
-import ru.zatert.springbootsecuritycrud.repositories.UserRepo;
-import ru.zatert.springbootsecuritycrud.services.UserService;
-
-import java.security.Principal;
-import java.util.List;
 
 @Controller
 ////@RequestMapping("/auth")
@@ -17,6 +9,14 @@ public class NoRestController {
     @RequestMapping("/users")
      public String pageForRest(){
         return "restform";
+    }
+    @RequestMapping("/user")
+    public String pageForRestUser(){
+        return "user";
+    }
+    @RequestMapping("/auth")
+    public String pageForUsers(){
+        return "auth";
     }
 //    @RequestMapping("/")
 //    public String hello(){

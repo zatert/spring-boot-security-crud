@@ -8,21 +8,30 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.zatert.springbootsecuritycrud.entities.Role;
 import ru.zatert.springbootsecuritycrud.entities.User;
+import ru.zatert.springbootsecuritycrud.repositories.RoleRepo;
 import ru.zatert.springbootsecuritycrud.repositories.UserRepo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.Long.valueOf;
 
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private RoleRepo roleRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User findByUsername (String username){
         return userRepo.findByUsername(username);
@@ -55,6 +64,12 @@ public class UserService implements UserDetailsService {
         if(user == null){
             return ResponseEntity.badRequest().build();
         }
+        Long roleId = Long.parseLong( user.getLastname()); //это id роли на самом деле
+        Role role = roleRepo.findById(roleId).get();
+        Collection <Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
         return ResponseEntity.ok().body(user); //<>(user, HttpStatus.CREATED);
     }
@@ -64,9 +79,15 @@ public class UserService implements UserDetailsService {
         if(user == null){
             return ResponseEntity.badRequest().build();
         }
+        Long roleId = Long.parseLong( user.getLastname()); // это id роли на самом деле
+        Role role = roleRepo.findById(roleId).get();
         currentUser.setId(id);
+        Collection <Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
         currentUser.setUsername(user.getUsername());
-        currentUser.setPassword(user.getPassword());
+       currentUser.setRoles(user.getRoles());
         currentUser.setEmail(user.getEmail());
 //        userDao.edit(currentUser);
         userRepo.save(currentUser);
